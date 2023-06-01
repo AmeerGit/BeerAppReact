@@ -1,27 +1,19 @@
-// import React from 'react'
-// import { GoogleMap, Marker } from 'react-google-maps';
+import { Map, GoogleApiWrapper } from "google-maps-react";
 
-const Map = () => {
-   
-//   const mapContainerStyle = {
-//     width: '100%',
-//     height: '400px',
-//   };
-
-//   const center = {
-//     lat: 37.7749, // Replace with your desired latitude
-//     lng: -122.4194, // Replace with your desired longitude
-//   };
-
-//   return (2023
-//     <GoogleMap
-//       mapContainerStyle={mapContainerStyle}
-//       center={center}
-//       zoom={12}
-//     >
-//       <Marker position={center} />
-//     </GoogleMap>
-//   );
+const MapContainer = (props: any) => {
+  const { lat, lng } = props;
+  return (
+    <Map
+      google={props.google}
+      style={{ width: "300px", height: "300px" }}
+      initialCenter={{
+        lat,
+        lng,
+      }}
+    />
+  );
 };
 
- export default Map;
+export default GoogleApiWrapper({
+  apiKey: "AIzaSyBLK9yCae4cjddxk2tjl9aYAt8tkHCidHQ",
+})(MapContainer);

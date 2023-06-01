@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { Grid, Typography, styled } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import LanguageIcon from "@mui/icons-material/Language";
+import MapContainer from '../Map/index'
 
 const InfoContainer = styled("div")({
   "& p": {
@@ -56,7 +57,9 @@ const Beer = () => {
             </p>
           </InfoContainer>
         </Grid>
-        <Grid item xs={12} sm={6}></Grid>
+        <Grid item xs={12} sm={6}>
+          <MapContainer lat={beer?.latitude} lng={beer?.longitude}/>
+        </Grid>
       </Grid>
     </article>
   );
