@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { fetchData } from './utils';
 import { Beer } from '../../types';
 import { Link as RouterLink } from 'react-router-dom';
@@ -9,8 +9,32 @@ const Home = () => {
   const [beerList, setBeerList] = useState<Array<Beer>>([]);
   const [savedList, setSavedList] = useState<Array<Beer>>([]);
 
-  // eslint-disable-next-line
-  useEffect(fetchData.bind(this, setBeerList), []);
+  useEffect(() => {
+    const savedItems = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedList(savedItems);
+  }, []);
+
+  useEffect(() => {
+    fetchData(setBeerList);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('savedItems', JSON.stringify(savedList));
+  }, [savedList]);
+
+  const handleToggleSaved = (beer: Beer) => {
+    const beerIndex = savedList.findIndex((item) => item.id === beer.id);
+    if (beerIndex === -1) {
+      setSavedList([...savedList, beer]);
+    } else {
+      const updatedList = savedList.filter((item) => item.id !== beer.id);
+      setSavedList(updatedList);
+    }
+  };
+
+  const handleRemoveAll = () => {
+    setSavedList([]);
+  };
 
   return (
     <article>
@@ -25,7 +49,10 @@ const Home = () => {
               <ul className={styles.list}>
                 {beerList.map((beer, index) => (
                   <li key={index.toString()}>
-                    <Checkbox />
+                    <Checkbox
+                      checked={savedList.some((item) => item.id === beer.id)}
+                      onChange={() => handleToggleSaved(beer)}
+                    />
                     <Link component={RouterLink} to={`/beer/${beer.id}`}>
                       {beer.name}
                     </Link>
@@ -39,14 +66,17 @@ const Home = () => {
             <div className={styles.listContainer}>
               <div className={styles.listHeader}>
                 <h3>Saved items</h3>
-                <Button variant='contained' size='small'>
+                <Button variant='contained' size='small' onClick={handleRemoveAll}>
                   Remove all items
                 </Button>
               </div>
               <ul className={styles.list}>
                 {savedList.map((beer, index) => (
                   <li key={index.toString()}>
-                    <Checkbox />
+                    <Checkbox
+                      checked={true}
+                      onChange={() => handleToggleSaved(beer)}
+                    />
                     <Link component={RouterLink} to={`/beer/${beer.id}`}>
                       {beer.name}
                     </Link>

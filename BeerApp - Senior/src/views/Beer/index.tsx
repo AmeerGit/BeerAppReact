@@ -9,7 +9,8 @@ import MapContainer from '../Map/index'
 
 const InfoContainer = styled("div")({
   "& p": {
-    margin: "0 0 0 16px",
+    margin: "0 0 7px 16px",
+    display: 'flex',
   },
 });
 const StyledLink = styled("a")({
@@ -27,11 +28,11 @@ const Beer = () => {
   useEffect(fetchData.bind(this, setBeer, id), [id]);
 
   return (
-    <article style={{ padding: "1rem" }}>
+    <article style={{ padding: "1rem", height: '400px' }}>
       <Typography variant="h3" style={{ marginBottom: "1rem" }}>
         {beer?.name}
       </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} >
         <Grid item xs={12} sm={6}>
           <InfoContainer>
             <Typography variant="subtitle1" style={{ marginBottom: "0.5rem" }}>
