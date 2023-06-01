@@ -1,0 +1,7 @@
+.Container{
+    height: 100%;
+}
+.BeerListContainer{
+    display: flex;
+    justify-content: space-evenly;
+}
