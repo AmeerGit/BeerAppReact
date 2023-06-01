@@ -3,7 +3,6 @@ import { Beer } from "../../types";
 import { fetchData } from "./utils";
 import {
   Avatar,
-  Button,
   FormControl,
   InputLabel,
   List,
@@ -13,6 +12,8 @@ import {
   MenuItem,
   Select,
   TextField,
+  Pagination,
+  Grid,
 } from "@mui/material";
 import SportsBar from "@mui/icons-material/SportsBar";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +23,7 @@ const BeerList = () => {
   const navigate = useNavigate();
   const [beerList, setBeerList] = useState<Array<Beer>>([]);
   const [filteredBeerList, setFilteredBeerList] = useState<Array<Beer>>([]);
+  const [sortedBeerList, setSortedBeerList] = useState<Array<Beer>>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortType, setSortType] = useState<"asc" | "desc">("asc");
   const [pageNumber, setPageNumber] = useState(1);
@@ -46,7 +48,7 @@ const BeerList = () => {
         return b.name.localeCompare(a.name);
       }
     });
-    setFilteredBeerList(sortedList);
+    setSortedBeerList(sortedList);
   }, [filteredBeerList, sortType]);
 
   const handleSearchTermChange = (event: any) => {
@@ -58,12 +60,8 @@ const BeerList = () => {
     setSortType(event.target.value as "asc" | "desc");
   };
 
-  const handlePaginationNext = () => {
-    setPageNumber((prevPageNumber) => prevPageNumber + 1);
-  };
-
-  const handlePaginationPrevious = () => {
-    setPageNumber((prevPageNumber) => prevPageNumber - 1);
+  const handlePageChange = (event: any, value: number) => {
+    setPageNumber(value);
   };
 
   const onBeerClick = (id: string) => {
@@ -73,8 +71,7 @@ const BeerList = () => {
   // Pagination calculation
   const lastIndex = pageNumber * beersPerPage;
   const firstIndex = lastIndex - beersPerPage;
-  const currentBeers = filteredBeerList.slice(firstIndex, lastIndex);
-
+  const currentBeers = sortedBeerList.slice(firstIndex, lastIndex);
   return (
     <article className={styles.Container}>
       <section>
@@ -82,61 +79,51 @@ const BeerList = () => {
           <h1>BeerList page</h1>
         </header>
         <main>
-          <div className={styles.BeerListContainer}>
-            <TextField
-              id="outlined-basic"
-              label="Search"
-              variant="outlined"
-              value={searchTerm}
-              onChange={handleSearchTermChange}
-            />
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={4} lg={4}>
+              <TextField
+                id="outlined-basic"
+                label="Search"
+                variant="outlined"
+                value={searchTerm}
+                onChange={handleSearchTermChange}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Sort</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="Sort"
+                  value={sortType}
+                  onChange={handleSortTypeChange}
+                >
+                  <MenuItem value="asc">Ascending</MenuItem>
+                  <MenuItem value="desc">Descending</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} lg={5}>
+              <Pagination
+                color="primary"
+                count={Math.ceil(sortedBeerList.length / beersPerPage)}
+                page={pageNumber}
+                onChange={handlePageChange}
+              />
+            </Grid>
+          </Grid>
 
-            <FormControl>
-              <InputLabel id="demo-simple-select-label">
-                Sort
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                label="Sort"
-                value={sortType}
-                onChange={handleSortTypeChange}
-              >
-                <MenuItem value="asc">Ascending</MenuItem>
-                <MenuItem value="desc">Descending</MenuItem>
-              </Select>
-            </FormControl>
-            <div>
-              <Button variant='contained'
-                onClick={handlePaginationPrevious}
-                disabled={pageNumber === 1}
-              >
-                Prev
-              </Button>
-              <span> {pageNumber} </span>
-              <Button variant='contained'
-                onClick={handlePaginationNext}
-                disabled={lastIndex >= filteredBeerList.length}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
           <List>
             {currentBeers.map((beer) => (
-              <ListItemButton
-                key={beer.id}
-                onClick={() => onBeerClick(beer.id)}
-              >
+              <ListItemButton key={beer.id} onClick={() => onBeerClick(beer.id)}>
                 <ListItemAvatar>
                   <Avatar>
                     <SportsBar />
                   </Avatar>
                 </ListItemAvatar>
-                <ListItemText
-                  primary={beer.name}
-                  secondary={beer.brewery_type}
-                />
+                <ListItemText primary={beer.name} secondary={beer.brewery_type} />
               </ListItemButton>
             ))}
           </List>
