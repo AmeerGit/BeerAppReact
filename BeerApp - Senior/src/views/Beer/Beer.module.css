@@ -1,0 +1,13 @@
+.infoContainer p {
+    margin: 0 0 7px 16px;
+    display: flex;
+  }
+  
+  .link {
+    text-decoration: none;
+  }
+  
+  .link:hover {
+    text-decoration: none;
+  }
+  

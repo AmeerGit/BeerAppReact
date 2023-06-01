@@ -1,7 +1,18 @@
 import { Map, GoogleApiWrapper } from "google-maps-react";
+import { MapOutlined } from '@mui/icons-material';
 
 const MapContainer = (props: any) => {
   const { lat, lng } = props;
+  
+  if(!lat){
+    return(
+      <>
+      <MapOutlined fontSize="large" />
+      <p>Map Unavailable</p>
+    </>
+    )
+  }
+
   return (
     <Map
       google={props.google}

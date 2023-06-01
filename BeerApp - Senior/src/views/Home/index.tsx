@@ -18,22 +18,24 @@ const Home = () => {
     fetchData(setBeerList);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('savedItems', JSON.stringify(savedList));
-  }, [savedList]);
 
   const handleToggleSaved = (beer: Beer) => {
     const beerIndex = savedList.findIndex((item) => item.id === beer.id);
     if (beerIndex === -1) {
-      setSavedList([...savedList, beer]);
+      const updatedList = [...savedList, beer];
+      setSavedList(updatedList);
+      localStorage.setItem('savedItems', JSON.stringify(updatedList));
     } else {
       const updatedList = savedList.filter((item) => item.id !== beer.id);
       setSavedList(updatedList);
+      localStorage.setItem('savedItems', JSON.stringify(updatedList));
     }
   };
 
   const handleRemoveAll = () => {
     setSavedList([]);
+    localStorage.removeItem('savedItems');
+
   };
 
   return (
